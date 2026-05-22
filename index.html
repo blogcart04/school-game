@@ -8,15 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        .edgar-floating {
-            position: absolute;
-            top: 200px;
-            right: 100px;
-            width: 300px;
-            z-index: 10;
-            pointer-events: none;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
-        }
         .tab-content {
             opacity: 0;
             transform: translateY(10px);
@@ -144,7 +135,7 @@
         <h1 class="brawl-title-white text-6xl md:text-8xl mb-2">SCHOOL GAME</h1>
         <h2 class="brawl-title-yellow text-2xl md:text-4xl tracking-wide uppercase">BRAWL STARS EDITION</h2>
         <p class="mt-4 brawl-subtitle-cyan text-xl md:text-2xl uppercase">
-            Цифровой образовательный ресурс • ВКР 2026
+            Цифровой образовательный ресурс • ВКП 2026
         </p>
     </header>
 
@@ -174,7 +165,7 @@
                             <p class="text-white text-sm normal-case">Автоматизация навыков устного счёта первого десятка.</p>
                         </div>
                     </div>
-                    <a href="https://wordwall.net/ru" target="_blank" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</a>
+                    <button onclick="openMiniGame('math_count')" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
@@ -189,7 +180,7 @@
                             <p class="text-white text-sm normal-case">Развитие пространственного воображения и гео-зрения.</p>
                         </div>
                     </div>
-                    <a href="https://learningapps.org" target="_blank" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</a>
+                    <button onclick="openMiniGame('math_geo')" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
@@ -204,7 +195,7 @@
                             <p class="text-white text-sm normal-case">Формирование прочных навыков табличного умножения.</p>
                         </div>
                     </div>
-                    <button onclick="openMiniGame()" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</button>
+                    <button onclick="openMiniGame('math_mult')" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
@@ -219,7 +210,7 @@
                             <p class="text-white text-sm normal-case">Развитие критического мышления и навыков самоконтроля.</p>
                         </div>
                     </div>
-                    <a href="https://learningapps.org" target="_blank" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</a>
+                    <button onclick="openMiniGame('math_bug')" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
             </div>
@@ -231,14 +222,14 @@
                         <span class="bg-green-500 border-2 border-black text-black font-bold text-xs px-2 py-1 rounded mb-3 inline-block">1 КЛАСС</span>
                         <h3 class="brawl-title-yellow text-3xl mb-2">Зоо-Сортировка</h3>
                         <p class="text-gray-200 text-sm mb-4 tracking-wide text-left normal-case">
-                            Раздели животных по командам: кто помогает человеку на ферме, а кто выживает в дикой сборке!
+                            Раздели животных по командам: кто помогает человеку на ферме, а кто выживает в дикой природе!
                         </p>
                         <div class="bg-black/40 rounded-xl border-2 border-yellow-400 p-3.5 mb-4 text-left">
                             <span class="text-yellow-400 text-xs tracking-wider block mb-1" style="text-shadow: 1px 1px 0px #000;">Модификатор ФГОС:</span>
                             <p class="text-white text-sm normal-case">Группировка объектов живой природы по существенным признакам.</p>
                         </div>
                     </div>
-                    <a href="https://wordwall.net/ru" target="_blank" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</a>
+                    <button onclick="openMiniGame('world_zoo')" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
@@ -253,7 +244,7 @@
                             <p class="text-white text-sm normal-case">Установление причинно-следственных связей в временах года.</p>
                         </div>
                     </div>
-                    <a href="https://learningapps.org" target="_blank" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</a>
+                    <button onclick="openMiniGame('world_season')" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
@@ -268,7 +259,7 @@
                             <p class="text-white text-sm normal-case">Моделирование простейших экологических связей в природе.</p>
                         </div>
                     </div>
-                    <a href="https://wordwall.net/ru" target="_blank" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</a>
+                    <button onclick="openMiniGame('world_eco')" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
@@ -283,7 +274,7 @@
                             <p class="text-white text-sm normal-case">Различение тел и веществ, изучение их агрегатных состояний.</p>
                         </div>
                     </div>
-                    <a href="https://learningapps.org" target="_blank" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</a>
+                    <button onclick="openMiniGame('world_lab')" class="w-full text-center play-btn text-2xl py-3 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
             </div>
@@ -292,15 +283,15 @@
 
     </main>
 
-    <div id="game-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+    <div id="game-modal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
         <div class="max-w-md w-full bg-[#201a43] border-4 border-black rounded-3xl p-6 shadow-[0_12px_0_#000] text-center relative">
             
             <button onclick="closeMiniGame()" class="absolute -top-3 -right-3 bg-red-600 border-4 border-black text-white w-10 h-10 rounded-full text-xl font-bold flex items-center justify-center shadow-[0_4px_0_#000] active:translate-y-1 active:shadow-none transition-all">✕</button>
             
             <div id="modal-start-screen" class="block">
-                <h3 class="brawl-title-yellow text-3xl mb-4">МИССИЯ: УМНОЖЕНИЕ</h3>
-                <p class="text-sm text-gray-300 normal-case mb-6 leading-relaxed">
-                    Добро пожаловать на арену шифрования! Реши все примеры на таблицу умножения, сохрани свои жизни и собери гемы!
+                <h3 id="start-title" class="brawl-title-yellow text-3xl mb-4">НАЗВАНИЕ ИГРЫ</h3>
+                <p id="start-desc" class="text-sm text-gray-300 normal-case mb-6 leading-relaxed">
+                    Описание миссии...
                 </p>
                 <button onclick="startModalGame()" class="play-btn w-full py-3 rounded-2xl text-xl">В БОЙ! ⚔️</button>
             </div>
@@ -308,12 +299,12 @@
             <div id="modal-game-screen" class="hidden">
                 <div class="flex justify-between items-center bg-black/40 border-2 border-black rounded-xl px-3 py-1.5 mb-4 text-sm">
                     <div>ХП: <span id="modal-hearts" class="text-red-500 text-base">❤️❤️❤️</span></div>
-                    <div class="text-yellow-400">УРОВЕНЬ: <span id="modal-progress">1/4</span></div>
+                    <div class="text-yellow-400">КВЕСТ: <span id="modal-progress">1/4</span></div>
                     <div>💎 <span id="modal-score" class="text-cyan-300 font-bold">0</span></div>
                 </div>
                 
                 <div class="bg-black/30 border-2 border-black/40 rounded-xl py-6 px-2 mb-4">
-                    <div id="modal-question-text" class="brawl-title-white text-4xl tracking-wider">3 × 4 = ?</div>
+                    <div id="modal-question-text" class="brawl-title-white text-2xl md:text-3xl tracking-wider leading-snug">Вопрос?</div>
                 </div>
 
                 <div id="modal-answers-grid" class="grid grid-cols-2 gap-3"></div>
@@ -321,7 +312,7 @@
 
             <div id="modal-finish-screen" class="hidden">
                 <h3 id="modal-result-title" class="brawl-title-white text-3xl mb-2">ПОБЕДА!</h3>
-                <p id="modal-result-status" class="text-yellow-400 text-sm mb-4 uppercase">Ты настоящий бравлер!</p>
+                <p id="modal-result-status" class="text-yellow-400 text-sm mb-4 uppercase">Миссия завершена</p>
                 
                 <div class="bg-black/40 border-2 border-black rounded-xl p-4 mb-4 flex justify-around text-center">
                     <div>
@@ -340,7 +331,7 @@
     </div>
 
     <footer class="relative z-10 bg-black/60 border-t-4 border-black text-gray-400 text-sm text-center py-6 tracking-widest mt-auto">
-        &copy; 2026 Разработано в рамках ВКР. ГБПОУ Белорецкий педагогический колледж.
+        &copy; 2026 Разработано в рамках ВКП. ГБПОУ Белорецкий педагогический колледж.
     </footer>
 
     <script>
@@ -355,25 +346,111 @@
             clickedButton.classList.add('active');
         }
 
-        // ЛОГИКА МИНИ-ИГРЫ
-        const questionsList = [
-            { q: "3 × 4 = ?", a: ["12", "14", "9", "16"], c: 0 },
-            { q: "6 × 7 = ?", a: ["46", "36", "42", "49"], c: 2 },
-            { q: "5 × 9 = ?", a: ["40", "45", "50", "35"], c: 1 },
-            { q: "8 × 8 = ?", a: ["64", "56", "72", "68"], c: 0 }
-        ];
+        // БАЗА ДАННЫХ ВСЕХ 8 ИГР
+        const gamesRepository = {
+            math_count: {
+                title: "ВЕСЁЛЫЙ СЧЁТ",
+                desc: "Защити сейф от роботов! Быстро решай примеры на сложение и вычитание в пределах 20.",
+                questions: [
+                    { q: "8 + 5 = ?", a: ["12", "13", "14", "15"], c: 1 },
+                    { q: "14 - 6 = ?", a: ["7", "9", "8", "6"], c: 2 },
+                    { q: "9 + 7 = ?", a: ["16", "15", "17", "14"], c: 0 },
+                    { q: "20 - 11 = ?", a: ["8", "9", "10", "11"], c: 1 }
+                ]
+            },
+            math_geo: {
+                title: "ГЕО-ЗАХВАТ",
+                desc: "Распознавай геометрические фигуры на игровой карте, чтобы собрать редкие кристаллы!",
+                questions: [
+                    { q: "У какой фигуры три угла и три стороны?", a: ["Квадрат", "Круг", "Треугольник", "Овал"], c: 2 },
+                    { q: "Какую форму имеет щит Булла?", a: ["Круг", "Овал", "Квадрат", "Прямоугольник"], c: 1 },
+                    { q: "Сколько сторон у прямоугольника?", a: ["3", "4", "5", "6"], c: 1 },
+                    { q: "Какая фигура круглая и не имеет углов?", a: ["Ромб", "Трапеция", "Круг", "Куб"], c: 2 }
+                ]
+            },
+            math_mult: {
+                title: "МИССИЯ: УМНОЖЕНИЕ",
+                desc: "Перехвати секретный шифр роботов! Взламывай базы данных с помощью таблицы умножения.",
+                questions: [
+                    { q: "3 × 4 = ?", a: ["12", "14", "9", "16"], c: 0 },
+                    { q: "6 × 7 = ?", a: ["46", "36", "42", "49"], c: 2 },
+                    { q: "5 × 9 = ?", a: ["40", "45", "50", "35"], c: 1 },
+                    { q: "8 × 8 = ?", a: ["64", "56", "72", "68"], c: 0 }
+                ]
+            },
+            math_bug: {
+                title: "ОШИБКОЕД",
+                desc: "Интерактивный блиц-турнир. Найди скрытые баги и вычисли неверный математический пример!",
+                questions: [
+                    { q: "Где затаилась ошибка?", a: ["5×5=25", "4×8=32", "7×8=54", "9×3=27"], c: 2 },
+                    { q: "Какой пример решён НЕВЕРНО?", a: ["18:3=6", "24:4=7", "45:5=9", "36:6=6"], c: 1 },
+                    { q: "Найди баг в вычислениях:", a: ["6×3=18", "7×7=49", "8×4=32", "6×8=46"], c: 3 },
+                    { q: "Где компьютер ошибся?", a: ["50-15=35", "27+14=41", "80-22=58", "64+18=81"], c: 3 }
+                ]
+            },
+            world_zoo: {
+                title: "ЗОО-СОРТИРОВКА",
+                desc: "Распредели животных: определи, кто из них домашний помощник, а кто дикий лесной боец.",
+                questions: [
+                    { q: "Какое животное является ДИКИМ?", a: ["Лошадь", "Медведь", "Корова", "Овца"], c: 1 },
+                    { q: "Кто из этих бойцов живет НА ФЕРМЕ?", a: ["Лиса", "Заяц", "Свинья", "Волк"], c: 2 },
+                    { q: "Какое животное ДОМАШНЕЕ?", a: ["Коза", "Кабан", "Лось", "Еж"], c: 0 },
+                    { q: "Кто лишний в списке диких животных?", a: ["Рысь", "Курица", "Белка", "Олень"], c: 1 }
+                ]
+            },
+            world_season: {
+                title: "СЕЗОННЫЙ ТРЕК",
+                desc: "Угадывай времена года по изменениям природы на карте арен Бравл Старс.",
+                questions: [
+                    { q: "В какое время года опадают листья и идут затяжные дожди?", a: ["Зима", "Весна", "Лето", "Осень"], c: 3 },
+                    { q: "Когда природа просыпается и тает снег?", a: ["Весна", "Лето", "Осень", "Зима"], c: 0 },
+                    { q: "Самый жаркий сезон года с длинными днями?", a: ["Зима", "Весна", "Лето", "Осень"], c: 2 },
+                    { q: "В какое время года реки замерзают и покрываются льдом?", a: ["Осень", "Зима", "Весна", "Лето"], c: 1 }
+                ]
+            },
+            world_eco: {
+                title: "ЭКО-ДОЗОР",
+                desc: "Восстанови разрушенные экологические цепи питания, чтобы спасти лесной биом от увядания.",
+                questions: [
+                    { q: "Какое звено начинает любую лесную цепь питания?", a: ["Хищник", "Растение", "Насекомое", "Грибы"], c: 1 },
+                    { q: "Кто в цепи питания питается зайцами?", a: ["Лягушка", "Лиса", "Олень", "Мышь"], c: 1 },
+                    { q: "Какое животное является растительноядным?", a: ["Волк", "Сова", "Лось", "Рысь"], c: 2 },
+                    { q: "Продолжи цепь: Дуг -> Гусеница -> ...", a: ["Синица", "Волк", "Заяц", "Медведь"], c: 0 }
+                ]
+            },
+            world_lab: {
+                title: "ЛАБОРАТОРИЯ",
+                desc: "Изучи физические свойства окружающего мира. Разделяй твёрдые, жидкие и газообразные вещества.",
+                questions: [
+                    { q: "Какое состояние у куска льда?", a: ["Жидкое", "Твёрдое", "Газообразное", "Плазма"], c: 1 },
+                    { q: "Пар, летящий из кипящего чайника — это...", a: ["Твёрдое тело", "Жидкость", "Газ", "Кристалл"], c: 2 },
+                    { q: "Что из этого является ВЕЩЕСТВОМ (а не телом)?", a: ["Линейка", "Вода", "Гвоздь", "Мяч"], c: 1 },
+                    { q: "Какое вещество сохраняет форму и объем?", a: ["Кислород", "Спирт", "Железо", "Углекислый газ"], c: 2 }
+                ]
+            }
+        };
 
+        let currentActiveGame = null;
         let currentQ = 0;
         let scoreGems = 0;
         let brawlerLives = 3;
 
-        function openMiniGame() {
-            document.getElementById('game-modal').classList.remove('hidden');
+        function openMiniGame(gameKey) {
+            currentActiveGame = gamesRepository[gameKey];
+            
+            document.getElementById('start-title').innerText = currentActiveGame.title;
+            document.getElementById('start-desc').innerText = currentActiveGame.desc;
+            
+            const modal = document.getElementById('game-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
             resetModalGame();
         }
 
         function closeMiniGame() {
-            document.getElementById('game-modal').classList.add('hidden');
+            const modal = document.getElementById('game-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
 
         function startModalGame() {
@@ -388,20 +465,21 @@
         }
 
         function loadModalQuestion() {
-            if(currentQ >= questionsList.length) {
+            const list = currentActiveGame.questions;
+            if(currentQ >= list.length) {
                 endModalGame(true);
                 return;
             }
-            const data = questionsList[currentQ];
+            const data = list[currentQ];
             document.getElementById('modal-question-text').innerText = data.q;
-            document.getElementById('modal-progress').innerText = `${currentQ + 1}/${questionsList.length}`;
+            document.getElementById('modal-progress').innerText = `${currentQ + 1}/${list.length}`;
             document.getElementById('modal-score').innerText = scoreGems;
 
             const grid = document.getElementById('modal-answers-grid');
             grid.innerHTML = '';
             data.a.forEach((ans, index) => {
                 const btn = document.createElement('button');
-                btn.className = "btn-answer text-white py-3 rounded-xl text-lg font-bold transition duration-75 text-center";
+                btn.className = "btn-answer text-white py-3 rounded-xl text-base md:text-lg font-bold transition duration-75 text-center px-2 cursor-pointer";
                 btn.innerText = ans;
                 btn.onclick = () => checkModalAnswer(index);
                 grid.appendChild(btn);
@@ -409,7 +487,8 @@
         }
 
         function checkModalAnswer(idx) {
-            const data = questionsList[currentQ];
+            const list = currentActiveGame.questions;
+            const data = list[currentQ];
             if(idx === data.c) {
                 scoreGems += 1;
                 currentQ += 1;
@@ -444,13 +523,13 @@
             if(isWin && scoreGems > 1) {
                 title.innerText = "ПОБЕДА!";
                 title.style.color = "#4ade80";
-                status.innerText = "ШИФР ПЕРЕХВАЧЕН!";
+                status.innerText = "МИССИЯ УСПЕШНО ВЫПОЛНЕНА!";
                 document.getElementById('modal-final-trophies').innerText = `+${scoreGems * 2} КУБКОВ`;
                 document.getElementById('modal-final-gems').innerText = `${scoreGems} ГЕМОВ`;
             } else {
                 title.innerText = "ПОРАЖЕНИЕ";
                 title.style.color = "#ef4444";
-                status.innerText = "КУБКИ СЛИТЫ...";
+                status.innerText = "КУБКИ СЛИТЫ, ПОПРОБУЙ ЕЩЕ РАЗ!";
                 document.getElementById('modal-final-trophies').innerText = "0 КУБКОВ";
                 document.getElementById('modal-final-gems').innerText = `${scoreGems} ГЕМОВ`;
             }
