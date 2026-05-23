@@ -53,6 +53,11 @@
             text-shadow: -2.5px -2.5px 0 #000, 2.5px -2.5px 0 #000, -2.5px 2.5px 0 #000, 2.5px 2.5px 0 #000, 4px 4px 0px #000000;
         }
 
+        .brawl-title-purple {
+            color: #d8b4fe;
+            text-shadow: -2.5px -2.5px 0 #000, 2.5px -2.5px 0 #000, -2.5px 2.5px 0 #000, 2.5px 2.5px 0 #000, 4px 4px 0px #000000;
+        }
+
         /* КНОПКИ ЛЕВОГО МЕНЮ */
         .sidebar-btn {
             text-transform: uppercase;
@@ -69,7 +74,7 @@
         
         .sidebar-btn .btn-text {
             color: #ffffff;
-            font-size: 18px;
+            font-size: 15px;
             letter-spacing: 1px;
             text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0px 3px 0px #000;
         }
@@ -80,7 +85,15 @@
             transform: translateY(4px);
         }
 
-        /* КНОПКА МАГАЗИНА ИЗ СТИЛЯ БРАВЛ СТАРС */
+        /* КНОПКА РАНГОВОГО РЕЖИМА */
+        .sidebar-ranked-btn {
+            background: linear-gradient(180deg, #ca8a04, #854d0e) !important;
+        }
+        .sidebar-ranked-btn.active {
+            background: linear-gradient(180deg, #e11d48, #9f1239) !important;
+        }
+
+        /* КНОПКА МАГАЗИНА */
         .sidebar-shop-btn {
             background: linear-gradient(180deg, #fcd34d, #f59e0b) !important;
             border: 4px solid #000 !important;
@@ -135,9 +148,6 @@
             transition: all 0.05s ease;
         }
         .btn-answer:active { transform: translateY(3px); box-shadow: 0 1px 0 #000; }
-        
-        .btn-sort-home { background-color: #10b981 !important; border: 4px solid #000 !important; box-shadow: 0 5px 0 #000; }
-        .btn-sort-wild { background-color: #f59e0b !important; border: 4px solid #000 !important; box-shadow: 0 5px 0 #000; }
 
         .header-trophy-text {
             color: #ffcc00;
@@ -149,7 +159,6 @@
             text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000;
         }
 
-        /* ПЕРК-КНОПКИ В ОКТНЕ БОЯ */
         .perk-use-btn {
             background-color: #1e293b;
             border: 3px solid #000;
@@ -166,18 +175,66 @@
             opacity: 0.4;
             cursor: not-allowed;
         }
+
+        .achievement-locked {
+            background-color: #2e2e2e !important;
+            border: 4px solid #1a1a1a !important;
+            box-shadow: 0 6px 0 #000;
+            opacity: 0.65;
+            filter: grayscale(40%);
+        }
     </style>
 </head>
 <body class="brawl-bg text-white min-h-screen flex flex-col">
 
+    <!-- === ОКНО АВТОРИЗАЦИИ / ВЫБОРА РОЛИ (ВЫХОДИТ ПРИ ВХОДЕ) === -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-[#1e1445] border-4 border-black rounded-3xl p-6 shadow-[0_12px_0_#000] text-center">
+            <h2 class="brawl-title-yellow text-3xl md:text-4xl mb-6">ВЫБЕРИТЕ РОЛЬ</h2>
+            
+            <!-- Главный экран выбора роли -->
+            <div id="auth-roles-screen" class="flex flex-col gap-4">
+                <button onclick="selectRole('teacher')" class="play-btn w-full py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-xl rounded-2xl">УЧИТЕЛЬ 🎓</button>
+                <button onclick="showStudentForm()" class="play-btn w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-xl rounded-2xl">УЧЕНИК 🎒</button>
+                <button onclick="selectRole('developer')" class="play-btn w-full py-3 bg-gradient-to-r from-purple-500 to-fuchsia-600 text-xl rounded-2xl">РАЗРАБОТЧИК 🛠️</button>
+            </div>
+
+            <!-- Экран ввода данных для ученика -->
+            <div id="auth-student-screen" class="hidden text-left normal-case bg-black/30 border-2 border-black/40 rounded-2xl p-4">
+                <h3 class="brawl-title-white text-center text-xl mb-4">АНКЕТА УЧЕНИКА</h3>
+                
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-gray-300 uppercase mb-1 tracking-wider">Ваше Имя / Никнейм:</label>
+                    <input type="text" id="student-name-input" placeholder="Введите имя..." class="w-full bg-black/50 border-2 border-purple-500 rounded-xl px-3 py-2 text-white font-sans focus:outline-none focus:border-yellow-400">
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-xs font-bold text-gray-300 uppercase mb-1 tracking-wider">Выберите класс обучения:</label>
+                    <select id="student-class-input" class="w-full bg-black/50 border-2 border-purple-500 rounded-xl px-3 py-2 text-white font-sans focus:outline-none focus:border-yellow-400">
+                        <option value="1" class="text-black">1 класс</option>
+                        <option value="3" class="text-black">3 класс</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-3 mt-2">
+                    <button onclick="backToRoles()" class="flex-1 bg-neutral-700 border-2 border-black text-white font-bold py-2 rounded-xl text-sm shadow-[0_3px_0_#000] uppercase">Назад</button>
+                    <button onclick="submitStudentData()" class="flex-1 bg-yellow-500 border-2 border-black text-white font-bold py-2 rounded-xl text-sm shadow-[0_3px_0_#000] uppercase">В Бой! ⚔️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ВЕРХНЯЯ ПАНЕЛЬ ИГРОКА -->
     <div class="relative z-20 w-full max-w-7xl mx-auto px-4 pt-4 flex flex-wrap gap-4 items-center justify-between">
         <div class="flex items-center relative">
             <div class="absolute -left-2 -top-2 bg-blue-600 text-white border-2 border-black font-bold rounded-lg px-1.5 py-0.5 text-xs z-10 shadow-[0_2px_0_#000]">30</div>
             <div class="bg-[#212121] border-4 border-black rounded-xl p-1.5 flex items-center gap-3 pr-6 shadow-[0_4px_0_#000]">
                 <div class="w-12 h-12 bg-red-600 border-2 border-black rounded-lg flex items-center justify-center text-2xl shadow-inner">👑</div>
                 <div class="flex flex-col">
-                    <span class="header-player-name font-bold tracking-wide text-lg">NaVi|Fues</span>
-                    <span class="text-[10px] text-gray-400 uppercase tracking-tight -mt-1">Геймер-Студент</span>
+                    <!-- id="player-name-display" для динамического изменения стиля роли -->
+                    <span id="player-name-display" class="header-player-name font-bold tracking-wide text-lg">Загрузка...</span>
+                    <span id="player-status-display" class="text-[10px] text-gray-400 uppercase tracking-tight -mt-1">Геймер-Студент</span>
                 </div>
             </div>
         </div>
@@ -193,7 +250,7 @@
                     <div id="trophy-progress-bar" class="bg-gradient-to-r from-yellow-500 to-amber-400 h-full transition-all duration-500" style="width: 5%"></div>
                 </div>
             </div>
-            <div class="absolute -right-4 bg-[#1e293b] border-2 border-cyan-400 rounded-lg p-1 text-xs font-bold text-cyan-300 shadow-[0_2px_0_#000]">💎 I</div>
+            <div id="rank-badge-display" class="absolute -right-4 bg-[#1e293b] border-2 border-cyan-400 rounded-lg p-1 text-xs font-bold text-cyan-300 shadow-[0_2px_0_#000]">💎 I</div>
         </div>
 
         <div class="bg-[#212121] border-4 border-black rounded-xl px-4 py-1.5 flex items-center gap-2 shadow-[0_4px_0_#000]">
@@ -206,31 +263,57 @@
         <h1 class="brawl-title-white text-4xl md:text-5xl mb-1">SCHOOL GAME</h1>
     </header>
 
+    <!-- ОСНОВНОЙ КОНТЕЙНЕР С ЛЕВЫМ МЕНЮ -->
     <main class="relative z-10 flex-grow max-w-7xl w-full mx-auto px-4 py-2 flex flex-col md:flex-row gap-6">
         
-        <aside class="w-full md:w-64 shrink-0 flex flex-col gap-4 bg-black/30 border-4 border-black rounded-3xl p-4 h-fit shadow-[0_8px_0_#000]">
-            <div class="text-xs tracking-wider text-gray-400 mb-1 uppercase pl-1">Главное Меню:</div>
+        <!-- ЛЕВОЕ БОКОВОЕ МЕНЮ (САЙДБАР) -->
+        <aside class="w-full md:w-64 shrink-0 flex flex-col gap-3 bg-black/30 border-4 border-black rounded-3xl p-4 h-fit shadow-[0_8px_0_#000]">
+            <div class="text-xs tracking-wider text-gray-400 mb-0.5 uppercase pl-1">Главное Меню:</div>
             
-            <button onclick="switchTab('math', this)" class="sidebar-btn active text-white px-4 py-3.5 rounded-2xl cursor-pointer w-full">
-                <span class="text-xl bg-purple-900/50 p-1.5 rounded-xl border-2 border-black/40">🧮</span>
+            <button onclick="switchTab('math', this)" class="sidebar-btn active text-white px-4 py-3 rounded-2xl cursor-pointer w-full">
+                <span class="text-lg bg-purple-900/50 p-1 rounded-xl border-2 border-black/40">🧮</span>
                 <span class="btn-text">МАТЕМАТИКА</span>
             </button>
             
-            <button onclick="switchTab('world', this)" class="sidebar-btn text-white px-4 py-3.5 rounded-2xl cursor-pointer w-full">
-                <span class="text-xl bg-purple-900/50 p-1.5 rounded-xl border-2 border-black/40">🌍</span>
+            <button onclick="switchTab('world', this)" class="sidebar-btn text-white px-4 py-3 rounded-2xl cursor-pointer w-full">
+                <span class="text-lg bg-purple-900/50 p-1 rounded-xl border-2 border-black/40">🌍</span>
                 <span class="btn-text">ОКР. МИР</span>
             </button>
 
-            <button onclick="switchTab('shop', this)" class="sidebar-btn sidebar-shop-btn text-white px-4 py-3.5 rounded-2xl cursor-pointer w-full overflow-visible">
-                <span class="text-xl bg-amber-900/40 p-1.5 rounded-xl border-2 border-black/40">🏪</span>
+            <!-- РАНГОВЫЙ РЕЖИМ -->
+            <button onclick="switchTab('ranked', this)" class="sidebar-btn sidebar-ranked-btn text-white px-4 py-3 rounded-2xl cursor-pointer w-full">
+                <span class="text-lg bg-yellow-950/50 p-1 rounded-xl border-2 border-black/40">⭐</span>
+                <span class="btn-text">РАНГОВЫЙ РЕЖИМ</span>
+                <div class="badge">ТАЙМЕР</div>
+            </button>
+
+            <button onclick="switchTab('shop', this)" class="sidebar-btn sidebar-shop-btn text-white px-4 py-3 rounded-2xl cursor-pointer w-full overflow-visible">
+                <span class="text-lg bg-amber-900/40 p-1 rounded-xl border-2 border-black/40">🏪</span>
                 <span class="btn-text">МАГАЗИН</span>
-                <div class="badge">НОВОЕ</div>
+            </button>
+
+            <button onclick="switchTab('leaderboard', this)" class="sidebar-btn text-white px-4 py-3 rounded-2xl cursor-pointer w-full">
+                <span class="text-lg bg-purple-900/50 p-1 rounded-xl border-2 border-black/40">📊</span>
+                <span class="btn-text">ЛИДЕРЫ</span>
+            </button>
+
+            <button onclick="switchTab('friends', this)" class="sidebar-btn text-white px-4 py-3 rounded-2xl cursor-pointer w-full">
+                <span class="text-lg bg-purple-900/50 p-1 rounded-xl border-2 border-black/40">👥</span>
+                <span class="btn-text">ДРУЗЬЯ</span>
+            </button>
+
+            <button onclick="switchTab('achievements', this)" class="sidebar-btn text-white px-4 py-3 rounded-2xl cursor-pointer w-full">
+                <span class="text-lg bg-purple-900/50 p-1 rounded-xl border-2 border-black/40">🏅</span>
+                <span class="btn-text">ДОСТИЖЕНИЯ</span>
             </button>
         </aside>
 
+        <!-- ПРАВАЯ ЧАСТЬ -->
         <section class="flex-1">
             
+            <!-- === ТАБ 1: МАТЕМАТИКА === -->
             <div id="math" class="tab-content active grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Весёлый счёт -->
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
                     <div>
                         <div class="flex justify-between items-start mb-1">
@@ -238,49 +321,55 @@
                             <span class="text-3xl">🧰</span>
                         </div>
                         <h3 class="brawl-title-yellow text-3xl mb-2">Весёлый счёт</h3>
-                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Решай примеры на сложение и вычитание в пределах 20. Защити командный сейф!</p>
+                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Решай примеры на сложение и вычитание в пределах 20. Защити сейф от роботов!</p>
                     </div>
                     <button onclick="openMiniGame('math_count')" class="w-full text-center play-btn text-xl py-2.5 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
+                <!-- Гео-Захват -->
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
                     <div>
                         <span class="bg-green-500 border-2 border-black text-black font-bold text-xs px-2 py-1 rounded mb-3 inline-block">1 КЛАСС</span>
                         <h3 class="brawl-title-yellow text-3xl mb-2">Гео-Захват</h3>
-                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Определяй геометрические фигуры визуально на карте арен и собирай кристаллы.</p>
+                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Определяй геометрические фигуры визуально на карте арен и собирай кристаллы быстрее соперников.</p>
                     </div>
                     <button onclick="openMiniGame('math_geo')" class="w-full text-center play-btn text-xl py-2.5 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
+                <!-- Умножение -->
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
                     <div>
                         <span class="bg-cyan-500 border-2 border-black text-black font-bold text-xs px-2 py-1 rounded mb-3 inline-block">3 КЛАСС</span>
                         <h3 class="brawl-title-yellow text-3xl mb-2">Умножение</h3>
-                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Миссия «Перехват шифра». Прокачай навыки табличного умножения.</p>
+                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Миссия «Перехват шифра». Прокачай навыки табличного умножения и деления.</p>
                     </div>
                     <button onclick="openMiniGame('math_mult')" class="w-full text-center play-btn text-xl py-2.5 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
+                <!-- Ошибкоед -->
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
                     <div>
                         <span class="bg-cyan-500 border-2 border-black text-black font-bold text-xs px-2 py-1 rounded mb-3 inline-block">3 КЛАСС</span>
                         <h3 class="brawl-title-yellow text-3xl mb-2">Ошибкоед</h3>
-                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Найди скрытые математические баги и неверно решённые серверные логи.</p>
+                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Интерактивный блиц-турнир. Найди баги и неверно решённые примеры.</p>
                     </div>
                     <button onclick="openMiniGame('math_bug')" class="w-full text-center play-btn text-xl py-2.5 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
             </div>
 
+            <!-- === ТАБ 2: ОКРУЖАЮЩИЙ МИР === -->
             <div id="world" class="tab-content grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Зоо-Сортировка -->
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
                     <div>
                         <span class="bg-green-500 border-2 border-black text-black font-bold text-xs px-2 py-1 rounded mb-3 inline-block">1 КЛАСС</span>
                         <h3 class="brawl-title-yellow text-3xl mb-2">Зоо-Сортировка</h3>
-                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Распределяй животных по двум колонкам интерактивной таблицы.</p>
+                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Раздели животных по командам в интерактивной таблице (Домашние / Дикие).</p>
                     </div>
                     <button onclick="openMiniGame('world_zoo')" class="w-full text-center play-btn text-xl py-2.5 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
+                <!-- Сезонный Трек -->
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
                     <div>
                         <span class="bg-green-500 border-2 border-black text-black font-bold text-xs px-2 py-1 rounded mb-3 inline-block">1 КЛАСС</span>
@@ -290,27 +379,65 @@
                     <button onclick="openMiniGame('world_season')" class="w-full text-center play-btn text-xl py-2.5 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
+                <!-- Эко-дозор -->
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
                     <div>
                         <span class="bg-cyan-500 border-2 border-black text-black font-bold text-xs px-2 py-1 rounded mb-3 inline-block">3 КЛАСС</span>
                         <h3 class="brawl-title-yellow text-3xl mb-2">Эко-дозор</h3>
-                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Восстанови последовательные цепочки питания лесного биома.</p>
+                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Восстанови последовательные цепочки питания лесного биома, чтобы спасти экосистему арен.</p>
                     </div>
                     <button onclick="openMiniGame('world_eco')" class="w-full text-center play-btn text-xl py-2.5 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
 
+                <!-- Лаборатория -->
                 <div class="bg-[#312e81] rounded-3xl border-4 border-black p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
                     <div>
                         <span class="bg-cyan-500 border-2 border-black text-black font-bold text-xs px-2 py-1 rounded mb-3 inline-block">3 КЛАСС</span>
                         <h3 class="brawl-title-yellow text-3xl mb-2">Лаборатория</h3>
-                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Изучи свойства веществ по Учи.ру карточкам и пройди тест.</p>
+                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Изучи физические свойства и агрегатные состояния веществ по Учи.ру карточкам.</p>
                     </div>
                     <button onclick="openMiniGame('world_lab')" class="w-full text-center play-btn text-xl py-2.5 rounded-2xl block">ИГРАТЬ 🎮</button>
                 </div>
             </div>
 
+            <!-- === ТАБ: РАНГОВЫЙ РЕЖИМ === -->
+            <div id="ranked" class="tab-content grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="col-span-1 lg:col-span-2 text-center bg-black/40 border-4 border-yellow-500 rounded-3xl p-4 shadow-[0_4px_10px_rgba(234,179,8,0.2)]">
+                    <h2 class="brawl-title-yellow text-3xl md:text-4xl">🏆 РАНГОВЫЕ ИСПЫТАНИЯ 🏆</h2>
+                    <p class="text-xs text-gray-300 normal-case mt-1">Испытания повышенной сложности. Ровно 12 задач в каждом режиме. На ответ даётся всего 10 секунд!</p>
+                </div>
+
+                <!-- Ранговая математика -->
+                <div class="bg-gradient-to-br from-amber-950 to-red-950 rounded-3xl border-4 border-yellow-600 p-5 flex flex-col justify-between shadow-[0_8px_0_#000] relative overflow-hidden">
+                    <div class="absolute right-2 top-2 text-6xl opacity-10 select-none">🧮</div>
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-red-600 border-2 border-black text-white font-bold text-xs px-2 py-0.5 rounded inline-block uppercase">КОНТРОЛЬ ВРЕМЕНИ</span>
+                            <span class="text-sm font-bold text-yellow-400">⚡ 12 КВЕСТОВ</span>
+                        </div>
+                        <h3 class="brawl-title-purple text-3xl mb-2">Ранговая Математика</h3>
+                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Хардкорный микс из всех математических тем: счёт, геометрия и табличное умножение на скорость.</p>
+                    </div>
+                    <button onclick="openMiniGame('ranked_math')" class="w-full text-center play-btn bg-gradient-to-r from-red-500 to-amber-500 text-xl py-2.5 rounded-2xl block">НАЧАТЬ МАТЧ ⚔️</button>
+                </div>
+
+                <!-- Ранговый Окружающий мир -->
+                <div class="bg-gradient-to-br from-amber-950 to-red-950 rounded-3xl border-4 border-yellow-600 p-5 flex flex-col justify-between shadow-[0_8px_0_#000] relative overflow-hidden">
+                    <div class="absolute right-2 top-2 text-6xl opacity-10 select-none">🌍</div>
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="bg-red-600 border-2 border-black text-white font-bold text-xs px-2 py-0.5 rounded inline-block uppercase">КОНТРОЛЬ ВРЕМЕНИ</span>
+                            <span class="text-sm font-bold text-yellow-400">⚡ 12 КВЕСТОВ</span>
+                        </div>
+                        <h3 class="brawl-title-purple text-3xl mb-2">Ранговый Окр. Мир</h3>
+                        <p class="text-gray-200 text-sm mb-4 text-left normal-case">Марафон из 12 вопросов по зоологии, экологии и физическим свойствам тел окружающего мира.</p>
+                    </div>
+                    <button onclick="openMiniGame('ranked_world')" class="w-full text-center play-btn bg-gradient-to-r from-red-500 to-amber-500 text-xl py-2.5 rounded-2xl block">НАЧАТЬ МАТЧ ⚔️</button>
+                </div>
+            </div>
+
+            <!-- === ТАБ 3: МАГАЗИН ПЕРКОВ === -->
             <div id="shop" class="tab-content grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
                 <div class="bg-[#1e1b4b] border-4 border-amber-400 rounded-3xl p-5 flex flex-col justify-between shadow-[0_8px_0_#000]">
                     <div class="text-center">
                         <div class="text-4xl mb-2">💡</div>
@@ -334,23 +461,81 @@
                     </div>
                     <button onclick="buyPerk('skips', 10)" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 border-2 border-black rounded-xl py-3 font-bold text-lg shadow-[0_4px_0_#000] active:translate-y-1 active:shadow-none">КУПИТЬ ЗА 10 💎</button>
                 </div>
+            </div>
 
+            <!-- === ТАБ 4: ТАБЛИЦА ЛИДЕРОВ === -->
+            <div id="leaderboard" class="tab-content grid grid-cols-1 gap-4">
+                <div class="bg-[#1a163a] border-4 border-amber-400 rounded-3xl p-5 shadow-[0_8px_0_#000] max-w-xl mx-auto w-full">
+                    <h3 class="brawl-title-yellow text-3xl mb-4 text-center">ТАБЛИЦА ЛИДЕРОВ КЛАССА</h3>
+                    <p class="text-xs text-gray-400 text-center uppercase tracking-wider mb-4 normal-case">Набери максимум кубков, чтобы возглавить мировой топ!</p>
+                    <div id="leaderboard-list" class="space-y-2.5"></div>
+                </div>
+            </div>
+
+            <!-- === ТАБ 5: РАЗДЕЛ ДРУЗЕЙ === -->
+            <div id="friends" class="tab-content grid grid-cols-1 gap-4">
+                <div class="bg-[#161233]/90 border-4 border-black rounded-3xl p-8 text-center max-w-md mx-auto w-full shadow-[0_8px_0_#000]">
+                    <div class="text-6xl mb-4 animate-bounce">🛠️</div>
+                    <h3 class="brawl-title-yellow text-3xl mb-2">В РАЗРАБОТКЕ</h3>
+                    <p class="text-gray-300 text-sm normal-case mb-5">Функционал добавления друзей по тегу игрока, клановые чаты и совместные дружеские дуэли находятся на стадии проектирования.</p>
+                    <span class="bg-purple-950 border-2 border-purple-500 text-purple-300 font-bold text-xs px-4 py-2 rounded-xl inline-block uppercase">Доступно в v2.0</span>
+                </div>
+            </div>
+
+            <!-- === ТАБ 6: ДОСТИЖЕНИЯ === -->
+            <div id="achievements" class="tab-content grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-1 md:col-span-2 text-center mb-2">
+                    <h3 class="brawl-title-yellow text-3xl">КВЕСТЫ И ДОСТИЖЕНИЯ</h3>
+                    <p class="text-xs text-gray-400 uppercase tracking-wider normal-case mt-1">Достижения аккаунта за выполнение особых условий</p>
+                </div>
+
+                <div class="achievement-locked rounded-2xl p-4 flex items-center gap-4">
+                    <div class="text-3xl bg-black/40 p-2.5 rounded-xl border border-white/10 select-none">🎯</div>
+                    <div class="text-left">
+                        <h4 class="text-sm font-bold text-gray-300 uppercase tracking-wide">Первая кровь 🔒</h4>
+                        <p class="text-[11px] text-gray-400 normal-case leading-tight mt-0.5">Пройти любую мини-игру без единой ошибки и потери ХП.</p>
+                    </div>
+                </div>
+                <div class="achievement-locked rounded-2xl p-4 flex items-center gap-4">
+                    <div class="text-3xl bg-black/40 p-2.5 rounded-xl border border-white/10 select-none">🧮</div>
+                    <div class="text-left">
+                        <h4 class="text-sm font-bold text-gray-300 uppercase tracking-wide">Король чисел 🔒</h4>
+                        <p class="text-[11px] text-gray-400 normal-case leading-tight mt-0.5">Решить суммарно 50 математических выражений на аренах.</p>
+                    </div>
+                </div>
+                <div class="achievement-locked rounded-2xl p-4 flex items-center gap-4">
+                    <div class="text-3xl bg-black/40 p-2.5 rounded-xl border border-white/10 select-none">💎</div>
+                    <div class="text-left">
+                        <h4 class="text-sm font-bold text-gray-300 uppercase tracking-wide">Гемовый магнат 🔒</h4>
+                        <p class="text-[11px] text-gray-400 normal-case leading-tight mt-0.5">Накопить 100 кристаллов на балансе профиля.</p>
+                    </div>
+                </div>
+                <div class="achievement-locked rounded-2xl p-4 flex items-center gap-4">
+                    <div class="text-3xl bg-black/40 p-2.5 rounded-xl border border-white/10 select-none">🦊</div>
+                    <div class="text-left">
+                        <h4 class="text-sm font-bold text-gray-300 uppercase tracking-wide">Высшее звено 🔒</h4>
+                        <p class="text-[11px] text-gray-400 normal-case leading-tight mt-0.5">Безупречно восстановить цепочку питания в Эко-дозоре.</p>
+                    </div>
+                </div>
             </div>
 
         </section>
     </main>
 
+    <!-- ВСПЛЫВАЮЩЕЕ ОКНО ИГРОВОГО ДВИЖКА -->
     <div id="game-modal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
         <div class="max-w-md w-full bg-[#201a43] border-4 border-black rounded-3xl p-6 shadow-[0_12px_0_#000] text-center relative">
             
             <button onclick="closeMiniGame()" class="absolute -top-3 -right-3 bg-red-600 border-4 border-black text-white w-10 h-10 rounded-full text-xl font-bold flex items-center justify-center shadow-[0_4px_0_#000]">✕</button>
             
+            <!-- ЭКРАН СТАРТА -->
             <div id="modal-start-screen" class="block">
                 <h3 id="start-title" class="brawl-title-yellow text-3xl mb-4">НАЗВАНИЕ ИГРЫ</h3>
                 <p id="start-desc" class="text-sm text-gray-300 normal-case mb-6">Описание...</p>
                 <button onclick="handleStartButtonClick()" class="play-btn w-full py-3 rounded-2xl text-xl">В БОЙ! ⚔️</button>
             </div>
 
+            <!-- ТЕОРИЯ ДЛЯ ЛАБОРАТОРИИ -->
             <div id="modal-theory-screen" class="hidden text-left normal-case bg-black/40 border-2 border-purple-500 rounded-2xl p-4 mb-4 max-h-[340px] overflow-y-auto">
                 <h4 class="brawl-title-yellow text-center text-xl mb-3">🔬 ТЕОРИЯ: АГРЕГАТНЫЕ СОСТОЯНИЯ</h4>
                 <div class="text-sm text-gray-200 space-y-2">
@@ -362,11 +547,20 @@
                 <button onclick="startModalGameActual()" class="play-btn w-full py-2 rounded-xl text-lg mt-4">ПОНЯТНО, В БОЙ! 🧪</button>
             </div>
 
+            <!-- ИГРОВОЙ ЭКРАН -->
             <div id="modal-game-screen" class="hidden">
-                <div class="flex justify-between items-center bg-black/40 border-2 border-black rounded-xl px-3 py-1.5 mb-3 text-sm">
-                    <div>ХП: <span id="modal-hearts" class="text-red-500 text-base">❤️❤️❤️</span></div>
-                    <div class="text-yellow-400">КВЕСТ: <span id="modal-progress">1/4</span></div>
-                    <div>💎 <span id="modal-score" class="text-cyan-300 font-bold">0</span></div>
+                <!-- Панель статуса + Таймер для рангового режима -->
+                <div class="bg-black/40 border-2 border-black rounded-xl px-3 py-1.5 mb-3 text-sm flex flex-col gap-1.5">
+                    <div class="flex justify-between items-center w-full">
+                        <div>ХП: <span id="modal-hearts" class="text-red-500 text-base">❤️❤️❤️</span></div>
+                        <div class="text-yellow-400">КВЕСТ: <span id="modal-progress">1/4</span></div>
+                        <div>💎 <span id="modal-score" class="text-cyan-300 font-bold">0</span></div>
+                    </div>
+                    <!-- Блок таймера -->
+                    <div id="ranked-timer-box" class="w-full hidden items-center justify-between border-t border-white/10 pt-1">
+                        <span class="text-[11px] text-red-400 tracking-wider font-sans uppercase font-bold">⏱️ Время на ответ:</span>
+                        <span id="ranked-timer-text" class="text-red-500 font-black text-base px-2 bg-black/40 rounded border border-red-500/30">10с</span>
+                    </div>
                 </div>
                 
                 <div id="modal-visual-hint" class="hidden justify-center items-center p-3 mb-3 bg-black/40 border-2 border-black rounded-2xl min-h-[80px]"></div>
@@ -387,6 +581,7 @@
                 </div>
             </div>
 
+            <!-- ФИНАЛ ИГРЫ -->
             <div id="modal-finish-screen" class="hidden">
                 <h3 id="modal-result-title" class="brawl-title-white text-3xl mb-2">ПОБЕДА!</h3>
                 <p id="modal-result-status" class="text-yellow-400 text-sm mb-4 uppercase">Миссия завершена</p>
@@ -411,16 +606,133 @@
     </footer>
 
     <script>
-        // СОСТОЯНИЕ АККАУНТА И ИНВЕНТАРЯ ПЕРКОВ
         let totalAccountTrophies = 0;
-        let totalAccountGems = 15; // Дадим 15 стартовых гемов для тестов магазина!
+        let totalAccountGems = 15; 
         let inventory = { hints: 0, skips: 0 };
+        let activePlayerRole = 'Ученик'; 
+
+        let rankedTimerInterval = null;
+        let rankedTimeLeft = 10;
+
+        const fakeLeaderboardData = [
+            { name: "NaVi|Sanya", trophies: 110, avatar: "🔥", isFake: true },
+            { name: "BrawlMaster", trophies: 85, avatar: "⚡", isFake: true },
+            { name: "Artem2016", trophies: 60, avatar: "🕶️", isFake: true },
+            { name: "Pro_Gamer", trophies: 35, avatar: "👾", isFake: true },
+            { name: "Misha_Top", trophies: 15, avatar: "🐻", isFake: true }
+        ];
+
+        // --- ЛОГИКА ОКНА ВХОДА (УЧИТЕЛЬ / УЧЕНИК / РАЗРАБОТЧИК) ---
+        function selectRole(roleType) {
+            const nameDisplay = document.getElementById('player-name-display');
+            const statusDisplay = document.getElementById('player-status-display');
+            
+            if (roleType === 'teacher') {
+                nameDisplay.innerText = "Учитель";
+                statusDisplay.innerText = "Модератор арен";
+                activePlayerRole = "Учитель";
+                closeAuthModal();
+            } else if (roleType === 'developer') {
+                nameDisplay.innerText = "Разработчик";
+                statusDisplay.innerText = "Создатель кода";
+                activePlayerRole = "Разработчик";
+                closeAuthModal();
+            }
+        }
+
+        function showStudentForm() {
+            document.getElementById('auth-roles-screen').classList.add('hidden');
+            document.getElementById('auth-student-screen').classList.remove('hidden');
+        }
+
+        function backToRoles() {
+            document.getElementById('auth-student-screen').classList.add('hidden');
+            document.getElementById('auth-roles-screen').classList.remove('hidden');
+        }
+
+        function submitStudentData() {
+            const nameInput = document.getElementById('student-name-input').value.trim();
+            const classInput = document.getElementById('student-class-input').value;
+            
+            if (!nameInput) {
+                alert("Пожалуйста, введите имя вашего игрового аккаунта!");
+                return;
+            }
+            
+            const nameDisplay = document.getElementById('player-name-display');
+            const statusDisplay = document.getElementById('player-status-display');
+            
+            // Запись в нужном стиле: Класс | Имя
+            nameDisplay.innerText = `${classInput} Класс | ${nameInput}`;
+            statusDisplay.innerText = "Боец знаний";
+            activePlayerRole = "Ученик";
+            
+            closeAuthModal();
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('auth-modal').classList.remove('flex');
+            updateAccountHeader();
+        }
+
+
+        function getRankName(trophies) {
+            if (trophies >= 120) return "💎 III";
+            if (trophies >= 70) return "💎 II";
+            return "💎 I";
+        }
 
         function updateAccountHeader() {
             document.getElementById('global-trophies').innerText = totalAccountTrophies;
             document.getElementById('global-gems').innerText = totalAccountGems;
-            let progressPercent = Math.min(100, Math.max(5, (totalAccountTrophies / 60) * 100));
+            
+            let progressPercent = Math.min(100, Math.max(5, (totalAccountTrophies / 150) * 100));
             document.getElementById('trophy-progress-bar').style.width = progressPercent + '%';
+            
+            document.getElementById('rank-badge-display').innerText = getRankName(totalAccountTrophies);
+            
+            updateLeaderboardUI();
+        }
+
+        function updateLeaderboardUI() {
+            let fullList = [...fakeLeaderboardData];
+            const currentNameText = document.getElementById('player-name-display').innerText;
+            
+            fullList.push({ name: currentNameText !== "Загрузка..." ? currentNameText : "Ты", trophies: totalAccountTrophies, avatar: "👑", isFake: false });
+            fullList.sort((a, b) => b.trophies - a.trophies);
+            
+            const listContainer = document.getElementById('leaderboard-list');
+            if (!listContainer) return;
+            listContainer.innerHTML = '';
+            
+            fullList.forEach((player, index) => {
+                const rank = index + 1;
+                
+                let rowStyle = player.isFake 
+                    ? "bg-black/40 border-2 border-black/20 text-white" 
+                    : "bg-gradient-to-r from-purple-600 to-indigo-600 border-4 border-yellow-400 scale-[1.02] shadow-[0_4px_10px_rgba(234,179,8,0.3)] text-yellow-200";
+                
+                let rankBadge = `text-white`;
+                if(rank === 1) rankBadge = "text-yellow-400 font-black text-xl filter drop-shadow-[0_2px_0_rgba(0,0,0,1)]";
+                if(rank === 2) rankBadge = "text-slate-300 font-bold";
+                if(rank === 3) rankBadge = "text-amber-600 font-bold";
+
+                const row = document.createElement('div');
+                row.className = `${rowStyle} rounded-2xl p-3 flex items-center justify-between shadow-[0_4px_0_#000] transition-all`;
+                row.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 text-center ${rankBadge}">#${rank}</span>
+                        <span class="text-2xl">${player.avatar}</span>
+                        <span class="tracking-wide uppercase text-sm md:text-base">${player.name}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 font-black text-yellow-400 text-sm md:text-base" style="text-shadow: 1.5px 1.5px 0 #000;">
+                        <span>${player.trophies}</span>
+                        <span>🏆</span>
+                    </div>
+                `;
+                listContainer.appendChild(row);
+            });
         }
 
         function updateShopUI() {
@@ -448,7 +760,7 @@
 
         const gamesRepository = {
             math_count: {
-                key: "math_count", title: "ВЕСЁЛЫЙ СЧЁТ", desc: "Защити командный сейф! Решай примеры на сложение и вычитание в пределах 20.",
+                key: "math_count", title: "ВЕСЁЛЫЙ СЧЁТ", desc: "Защити сейф от роботов! Решай примеры на сложение и вычитание в пределах 20.",
                 questions: [
                     { q: "9 + 6 = ?", a: ["13", "15", "14", "16"], c: 1 },
                     { q: "17 - 8 = ?", a: ["9", "8", "7", "11"], c: 0 },
@@ -460,12 +772,12 @@
                 key: "math_geo", title: "ГЕО-ЗАХВАТ", desc: "Смотри на картинку фигуры и определяй её название быстрее соперников!",
                 questions: [
                     { q: "Какая геометрическая фигура показана на экране?", a: ["Квадрат", "Треугольник", "Круг", "Ромб"], c: 1 },
-                    { q: "Определи форму этого игрового объекта:", a: ["Овал", "Круг", "Квадрат", "Прямоугольник"], c: 2 },
-                    { q: "Узнай фигуру по её визуальной модели:", a: ["Круг", "Трапеция", "Квадрат", "Ромб"], c: 0 }
+                    { q: "У какой геометрической фигуры 3 угла и 3 стороны?", a: ["Квадрат", "Ромб", "Треугольник", "Овал"], c: 2 },
+                    { q: "Определи форму этого круглого игрового кристалла:", a: ["Овал", "Круг", "Квадрат", "Прямоугольник"], c: 1 }
                 ]
             },
             math_mult: {
-                key: "math_mult", title: "МИССИЯ: УМНОЖЕНИЕ", desc: "Перехвати секретный шифр роботов! Решай примеры на умножение.",
+                key: "math_mult", title: "МИССИЯ: УМНОЖЕНИЕ", desc: "Перехвати секретный шифр роботов! Прокачай навыки табличного умножения.",
                 questions: [
                     { q: "4 × 6 = ?", a: ["24", "22", "28", "18"], c: 0 },
                     { q: "7 × 8 = ?", a: ["54", "56", "64", "49"], c: 1 }
@@ -474,39 +786,77 @@
             math_bug: {
                 key: "math_bug", title: "ОШИБКОЕД", desc: "Найди баги! Какой из математических примеров решён неверно?",
                 questions: [
-                    { q: "Найди ошибочный серверный лог:", a: ["5×5=25", "6×7=46", "4×8=32", "9×3=27"], c: 1 }
+                    { q: "Найди ошибочный пример:", a: ["5×5=25", "6×7=46", "4×8=32", "9×3=27"], c: 1 }
                 ]
             },
             world_zoo: {
-                key: "world_zoo", title: "ЗОО-СОРТИРОВКА", desc: "Заполни интерактивную таблицу. Куда относится животное?",
+                key: "world_zoo", title: "ЗОО-СОРТИРОВКА", desc: "Заполни интерактивную таблицу. Распредели животных по двум колонкам.",
                 questions: [
-                    { q: "Куда распределить животное: ВОЛК ?", a: ["В левую колонку", "В правую колонку"], c: 1 },
-                    { q: "Куда распределить животное: КОРОВА ?", a: ["В левую колонку", "В правую колонку"], c: 0 },
-                    { q: "Куда распределить животное: ЛИСА ?", a: ["В левую колонку", "В правую колонку"], c: 1 }
+                    { q: "В какую колонку таблицы отправить: ВОЛК ?", a: ["Домашние (Левая)", "Дикие (Правая)"], c: 1 },
+                    { q: "В какую колонку таблицы отправить: КОРОВА ?", a: ["Домашние (Левая)", "Дикие (Правая)"], c: 0 },
+                    { q: "В какую колонку таблицы отправить: ЛИСА ?", a: ["Домашние (Левая)", "Дикие (Правая)"], c: 1 }
                 ]
             },
             world_season: {
-                key: "world_season", title: "СЕЗОННЫЙ ТРЕК", desc: "Угадывай времена года по графическим погодным изменениям на картах.",
+                key: "world_season", title: "СЕЗОННЫЙ ТРЕК", desc: "Угадывай времена года по графическим картам погодных изменений.",
                 questions: [
-                    { q: "В какое время года опадают листья и идут дожди?", a: ["Зима", "Осень", "Лето", "Весна"], c: 1 },
-                    { q: "Самый жаркий сезон, когда все купаются?", a: ["Лето", "Зима", "Весна", "Осень"], c: 0 },
-                    { q: "Когда реки замерзают и покрываются толстым льдом?", a: ["Осень", "Зима", "Весна", "Лето"], c: 1 }
+                    { q: "В какое время года опадают листья и идут затяжные дожди?", a: ["Зима", "Осень", "Лето", "Весна"], c: 1 },
+                    { q: "Самый жаркий сезон, когда все купаются на пляже?", a: ["Лето", "Зима", "Весна", "Осень"], c: 0 },
+                    { q: "Когда реки замерзают и покрываются толстым слоем льда?", a: ["Осень", "Зима", "Весна", "Лето"], c: 1 }
                 ]
             },
             world_eco: {
-                key: "world_eco", title: "ЭКО-ДОЗОР", desc: "Собери разрушенную цепочку питания лесного биома шаг за шагом.",
+                key: "world_eco", title: "ЭКО-ДОЗОР", desc: "Собери цепочку питания лесного биома шаг за шагом.",
                 questions: [
-                    { q: "Что начинает любую лесную цепь питания?", a: ["Хищник", "Растение (Дуб)", "Гусеница"], c: 1 },
-                    { q: "Кто ест сочные листья дуба?", a: ["Волк", "Синица", "Гусеница"], c: 2 },
-                    { q: "Какая лесная птица питается гусеницами?", a: ["Синица", "Орёл", "Курица"], c: 0 },
-                    { q: "Какой хищник охотится на мелких птиц в лесу?", a: ["Заяц", "Лиса", "Корова"], c: 1 }
+                    { q: "Что начинает любую лесную цепь питания (1-е звено)?", a: ["Хищник", "Растение (Дуб)", "Гусеница"], c: 1 },
+                    { q: "Кто питается сочными листьями дуба (2-е звено)?", a: ["Волк", "Синица", "Гусеница"], c: 2 },
+                    { q: "Какая птица питается лесными гусеницами (3-е звено)?", a: ["Синица", "Орёл", "Курица"], c: 0 },
+                    { q: "Какой лесной хищник завершает эту цепочку (4-е звено)?", a: ["Заяц", "Лиса", "Корова"], c: 1 }
                 ]
             },
             world_lab: {
                 key: "world_lab", title: "ЛАБОРАТОРИЯ ВЕЩЕСТВ", desc: "Проверь свои знания об агрегатных состояниях тел окружающего мира.",
                 questions: [
                     { q: "Какое агрегатное состояние у куска твёрдого льда?", a: ["Жидкое", "Твёрдое", "Газообразное"], c: 1 },
-                    { q: "Пар, летящий из закипевшего чайника — это...", a: ["Твёрдое тело", "Жидкость", "Газ"], c: 2 }
+                    { q: "Пар, летящий из закипевшего чайника — это вещество в состоянии...", a: ["Твёрдом", "Жидком", "Газообразном"], c: 2 }
+                ]
+            },
+            
+            ranked_math: {
+                key: "ranked_math", title: "РАНГОВАЯ МАТЕМАТИКА", desc: "Испытание на скорость! 12 случайных вопросов на время. Готов?",
+                isRanked: true,
+                questions: [
+                    { q: "8 + 7 = ?", a: ["13", "15", "14", "16"], c: 1 },
+                    { q: "14 - 6 = ?", a: ["7", "8", "9", "6"], c: 1 },
+                    { q: "9 + 5 = ?", a: ["14", "13", "15", "12"], c: 0 },
+                    { q: "20 - 11 = ?", a: ["8", "9", "10", "7"], c: 1 },
+                    { q: "3 × 4 = ?", a: ["12", "14", "16", "10"], c: 0 },
+                    { q: "6 × 5 = ?", a: ["25", "30", "35", "24"], c: 1 },
+                    { q: "9 × 2 = ?", a: ["16", "18", "20", "14"], c: 1 },
+                    { q: "4 × 7 = ?", a: ["24", "26", "28", "32"], c: 2 },
+                    { q: "У какой фигуры все 4 стороны равны?", a: ["Прямоугольник", "Ромб", "Квадрат", "Треугольник"], c: 2 },
+                    { q: "Какая геометрическая фигура не имеет углов?", a: ["Квадрат", "Треугольник", "Круг", "Трапеция"], c: 2 },
+                    { q: "12 + 8 = ?", a: ["18", "22", "19", "20"], c: 3 },
+                    { q: "15 - 9 = ?", a: ["5", "6", "7", "4"], c: 1 }
+                ]
+            },
+            
+            ranked_world: {
+                key: "ranked_world", title: "РАНГОВЫЙ ОКР. МИР", desc: "Марафон знаний! 12 вопросов по экологии, зоологии и физике карточек Учи.ру.",
+                isRanked: true,
+                questions: [
+                    { q: "Какое это животное: МЕДВЕДЬ ?", a: ["Домашнее", "Дикое"], c: 1 },
+                    { q: "Какое это животное: ОВЦА ?", a: ["Домашнее", "Дикое"], c: 0 },
+                    { q: "Какое время года приходит сразу после холодной зимы?", a: ["Осень", "Лето", "Весна", "Сентябрь"], c: 2 },
+                    { q: "Какое время года предшествует зиме?", a: ["Весна", "Лето", "Осень", "Январь"], c: 2 },
+                    { q: "Какое звено начинает любую лесную цепь питания?", a: ["Хищные птицы", "Зелёные растения", "Насекомые"], c: 1 },
+                    { q: "Лёд и иней на деревьях — это какое состояние воды?", a: ["Твёрдое", "Жидкое", "Газообразное"], c: 0 },
+                    { q: "Утренняя роса на траве — это пример какого состояния?", a: ["Твёрдого", "Жидкого", "Газообразного"], c: 1 },
+                    { q: "Воздух, которым мы дышим — это какое состояние?", a: ["Твёрдое", "Жидкое", "Газообразное"], c: 2 },
+                    { q: "Является ли лесной орёл хищником?", a: ["Да, конечно", "Нет, он травоядный"], c: 0 },
+                    { q: "Что необходимо растению для роста?", a: ["Только темнота", "Свет, вода и тепло", "Только песок"], c: 1 },
+                    { q: "Где в основном обитает лягушка?", a: ["В песках", "В воде и влажной среде", "В степи"], c: 1 },
+                    { q: "Какое колючее животное впадает в зимнюю спячку?", a: ["Заяц", "Волк", "Ёж", "Белка"], c: 2 }
                 ]
             }
         };
@@ -528,10 +878,11 @@
             document.getElementById('modal-theory-screen').classList.add('hidden');
             document.getElementById('modal-finish-screen').classList.add('hidden');
             document.getElementById('modal-game-screen').classList.add('hidden');
-            document.getElementById('modal-start-screen').removeProperty ? document.getElementById('modal-start-screen').removeProperty('display') : document.getElementById('modal-start-screen').classList.remove('hidden');
+            document.getElementById('modal-start-screen').classList.remove('hidden');
         }
 
         function closeMiniGame() {
+            stopRankedTimer();
             document.getElementById('game-modal').classList.add('hidden');
             document.getElementById('game-modal').classList.remove('flex');
         }
@@ -551,9 +902,50 @@
             document.getElementById('modal-theory-screen').classList.add('hidden');
             document.getElementById('modal-finish-screen').classList.add('hidden');
             document.getElementById('modal-game-screen').classList.remove('hidden');
+            
+            if (currentActiveGame.isRanked) {
+                document.getElementById('ranked-timer-box').classList.remove('hidden');
+                document.getElementById('ranked-timer-box').classList.add('flex');
+            } else {
+                document.getElementById('ranked-timer-box').classList.remove('flex');
+                document.getElementById('ranked-timer-box').classList.add('hidden');
+            }
+
             renderHearts();
             updatePerksInGameUI();
             loadModalQuestion();
+        }
+
+        function startRankedTimer() {
+            stopRankedTimer();
+            if (!currentActiveGame.isRanked) return;
+            
+            rankedTimeLeft = 10;
+            document.getElementById('ranked-timer-text').innerText = `${rankedTimeLeft}с`;
+            
+            rankedTimerInterval = setInterval(() => {
+                rankedTimeLeft--;
+                document.getElementById('ranked-timer-text').innerText = `${rankedTimeLeft}с`;
+                
+                if (rankedTimeLeft <= 0) {
+                    stopRankedTimer();
+                    brawlerLives -= 1;
+                    renderHearts();
+                    if (brawlerLives <= 0) {
+                        endModalGame(false);
+                    } else {
+                        currentQ += 1;
+                        loadModalQuestion();
+                    }
+                }
+            }, 1000);
+        }
+
+        function stopRankedTimer() {
+            if (rankedTimerInterval) {
+                clearInterval(rankedTimerInterval);
+                rankedTimerInterval = null;
+            }
         }
 
         function updatePerksInGameUI() {
@@ -564,6 +956,7 @@
         }
 
         function loadModalQuestion() {
+            stopRankedTimer();
             const list = currentActiveGame.questions;
             if(currentQ >= list.length) {
                 endModalGame(true);
@@ -577,40 +970,35 @@
             const hintBox = document.getElementById('modal-visual-hint');
             hintBox.innerHTML = ''; hintBox.classList.add('hidden');
 
-            // 1. ВИЗУАЛ ДЛЯ ВЕСЕЛОГО СЧЕТА (СЕЙФ)
             if (currentActiveGame.key === 'math_count') {
                 hintBox.classList.remove('hidden');
                 hintBox.classList.add('flex');
                 hintBox.innerHTML = '<div class="flex items-center gap-3"><span class="text-4xl">🧰</span><b class="text-sm uppercase text-red-400">Сейф под защитой! Решай скорее!</b></div>';
             }
-            // 2. ВИЗУАЛ ДЛЯ ГЕО-ЗАХВАТА
             else if (currentActiveGame.key === 'math_geo') {
                 hintBox.classList.remove('hidden');
                 hintBox.classList.add('flex');
                 if (currentQ === 0) hintBox.innerHTML = '<svg width="60" height="60" viewBox="0 0 100 100"><polygon points="50,10 90,85 10,85" style="fill:#fbbf24;stroke:#000;stroke-width:5" /></svg>';
-                if (currentQ === 1) hintBox.innerHTML = '<div class="w-16 h-16 bg-cyan-500 border-4 border-black rounded-xl"></div>';
-                if (currentQ === 2) hintBox.innerHTML = '<div class="w-16 h-16 bg-green-500 border-4 border-black rounded-full"></div>';
+                if (currentQ === 1) hintBox.innerHTML = '<svg width="60" height="60" viewBox="0 0 100 100"><polygon points="50,10 90,85 10,85" style="fill:#3b82f6;stroke:#000;stroke-width:5" /></svg>';
+                if (currentQ === 2) hintBox.innerHTML = '<div class="w-14 h-14 bg-green-500 border-4 border-black rounded-full"></div>';
             } 
-            // 3. ВИЗУАЛ ТАБЛИЦЫ ДЛЯ ЗОО-СОРТИРОВКИ
             else if (currentActiveGame.key === 'world_zoo') {
                 hintBox.classList.remove('hidden');
                 hintBox.classList.add('flex');
                 hintBox.innerHTML = `
-                    <div class="w-full grid grid-cols-2 gap-2 text-center text-xs font-sans">
-                        <div class="bg-green-600/40 border border-green-500 p-1 rounded-xl">🏡 ЛЕВАЯ: Домашние</div>
-                        <div class="bg-amber-600/40 border border-amber-500 p-1 rounded-xl">🌲 ПРАВАЯ: Дикие</div>
+                    <div class="w-full grid grid-cols-2 gap-2 text-center text-[11px] font-sans">
+                        <div class="bg-green-600/30 border-2 border-green-500/50 p-1.5 rounded-xl text-green-300 font-bold">🏡 ЛЕВАЯ КОЛОНКА:<br>Домашние</div>
+                        <div class="bg-amber-600/30 border-2 border-amber-500/50 p-1.5 rounded-xl text-amber-300 font-bold">🌲 ПРАВАЯ КОЛОНКА:<br>Дикие</div>
                     </div>
                 `;
             }
-            // 4. ВИЗУАЛ КАРТИНКИ ДЛЯ ВРЕМЕН ГОДА
             else if (currentActiveGame.key === 'world_season') {
                 hintBox.classList.remove('hidden');
                 hintBox.classList.add('flex');
-                if (currentQ === 0) hintBox.innerHTML = '<div class="text-3xl">🍁🍂🌧️ <span class="text-xs block text-gray-300 font-sans">Осень: дожди и листопад</span></div>';
-                if (currentQ === 1) hintBox.innerHTML = '<div class="text-3xl">☀️🏖️🍀 <span class="text-xs block text-gray-300 font-sans">Лето: жара и пляж</span></div>';
-                if (currentQ === 2) hintBox.innerHTML = '<div class="text-3xl">❄️⛄🧊 <span class="text-xs block text-gray-300 font-sans">Зима: лёд на реках</span></div>';
+                if (currentQ === 0) hintBox.innerHTML = '<div class="text-3xl text-center">🍁🍂🌧️<span class="text-[10px] block text-gray-300 font-sans mt-0.5">Осень: Карточка погодных изменений</span></div>';
+                if (currentQ === 1) hintBox.innerHTML = '<div class="text-3xl text-center">☀️🏖️🍀<span class="text-[10px] block text-gray-300 font-sans mt-0.5">Лето: Карточка погодных изменений</span></div>';
+                if (currentQ === 2) hintBox.innerHTML = '<div class="text-3xl text-center">❄️⛄🧊<span class="text-[10px] block text-gray-300 font-sans mt-0.5">Зима: Карточка погодных изменений</span></div>';
             }
-            // 5. ВИЗУАЛ ЦЕПОЧКИ ДЛЯ ЭКО-ДОЗОРА
             else if (currentActiveGame.key === 'world_eco') {
                 hintBox.classList.remove('hidden');
                 hintBox.classList.add('flex');
@@ -620,10 +1008,10 @@
                 let step4 = currentQ > 3 ? "🦊" : "❓";
                 hintBox.innerHTML = `
                     <div class="flex items-center gap-1.5 font-sans font-bold text-sm bg-black/30 px-3 py-1.5 rounded-xl border border-white/10">
-                        <span class="p-1 bg-neutral-800 rounded-lg">${step1}</span> ➔ 
-                        <span class="p-1 bg-neutral-800 rounded-lg">${step2}</span> ➔ 
-                        <span class="p-1 bg-neutral-800 rounded-lg">${step3}</span> ➔ 
-                        <span class="p-1 bg-neutral-800 rounded-lg">${step4}</span>
+                        <span class="p-1 bg-neutral-800 rounded-lg text-lg border border-white/5 shadow-inner">${step1}</span> ➔ 
+                        <span class="p-1 bg-neutral-800 rounded-lg text-lg border border-white/5 shadow-inner">${step2}</span> ➔ 
+                        <span class="p-1 bg-neutral-800 rounded-lg text-lg border border-white/5 shadow-inner">${step3}</span> ➔ 
+                        <span class="p-1 bg-neutral-800 rounded-lg text-lg border border-white/5 shadow-inner">${step4}</span>
                     </div>`;
             }
 
@@ -637,10 +1025,11 @@
                 btn.onclick = () => checkModalAnswer(index);
                 grid.appendChild(btn);
             });
+            
             updatePerksInGameUI();
+            startRankedTimer();
         }
 
-        // РАБОТА ИСПОЛЬЗОВАНИЯ ПЕРКА: ПОДСКАЗКА
         function useHintPerk() {
             if (inventory.hints > 0) {
                 inventory.hints--;
@@ -659,7 +1048,6 @@
             }
         }
 
-        // РАБОТА ИСПОЛЬЗОВАНИЯ ПЕРКА: ПРОПУСК ЗАДАНИЯ
         function useSkipPerk() {
             if (inventory.skips > 0) {
                 inventory.skips--;
@@ -669,6 +1057,7 @@
         }
 
         function checkModalAnswer(idx) {
+            stopRankedTimer();
             const data = currentActiveGame.questions[currentQ];
             if(idx === data.c) {
                 scoreGems += 1; currentQ += 1;
@@ -692,6 +1081,7 @@
         }
 
         function endModalGame(isWin) {
+            stopRankedTimer();
             document.getElementById('modal-game-screen').classList.add('hidden');
             document.getElementById('modal-finish-screen').classList.remove('hidden');
             const title = document.getElementById('modal-result-title');
@@ -699,14 +1089,14 @@
             let wonTrophies = 0; let wonGems = scoreGems;
 
             if(isWin && scoreGems > 0) {
-                wonTrophies = scoreGems * 2;
+                wonTrophies = currentActiveGame.isRanked ? scoreGems * 4 : scoreGems * 2;
                 title.innerText = "ПОБЕДА!"; title.style.color = "#4ade80";
-                status.innerText = "МИССИЯ УСПЕШНО ВЫПОЛНЕНА!";
+                status.innerText = currentActiveGame.isRanked ? "РАНГОВЫЙ МАТЧ ЗАВЕРШЕН!" : "МИССИЯ ВЫПОЛНЕНА!";
                 totalAccountTrophies += wonTrophies;
                 totalAccountGems += wonGems;
             } else {
                 title.innerText = "ПОРАЖЕНИЕ"; title.style.color = "#ef4444";
-                status.innerText = "ПОПРОБУЙ ЕЩЁ РАЗ!";
+                status.innerText = "ЖИЗНИ ИЛИ ВРЕМЯ ИСТЕКЛИ!";
                 totalAccountGems += wonGems;
             }
             updateAccountHeader();
@@ -718,8 +1108,6 @@
             closeMiniGame();
         }
 
-        // СТАРТОВАЯ ИНИЦИАЛИЗАЦИЯ
-        updateAccountHeader();
         updateShopUI();
     </script>
 </body>
